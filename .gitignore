@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environments
+as-env/
+venv/
+.env
+
+# Data & logs
+data/
+honeylog/
+logs/
+
+# MLflow / artifacts
+mlruns/
+
+# OS
+.DS_Store
