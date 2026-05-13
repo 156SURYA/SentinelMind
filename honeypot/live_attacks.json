@@ -1,0 +1,402 @@
+[
+  {
+    "timestamp": "2026-05-13 12:48:17.673208",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "wget malware.sh",
+    "severity": "CRITICAL",
+    "recommended_action": "BLOCK_AND_ALERT",
+    "mitre_attack": [
+      "Command and Control",
+      "Command and Control"
+    ],
+    "reasoning": [
+      "Possible malware delivery activity detected",
+      "Possible malware delivery activity detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:48:16.666042",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "sudo su",
+    "severity": "HIGH",
+    "recommended_action": "ISOLATE_ENDPOINT",
+    "mitre_attack": [
+      "Privilege Escalation"
+    ],
+    "reasoning": [
+      "Privilege escalation activity detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:48:15.657389",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "cat /etc/passwd",
+    "severity": "MEDIUM",
+    "recommended_action": "CHALLENGE_MFA",
+    "mitre_attack": [
+      "Credential Access"
+    ],
+    "reasoning": [
+      "Credential enumeration attempt detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:48:14.648826",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "uname -a",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:48:13.640260",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "ls",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:48:12.625892",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "pwd",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:48:11.620079",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "whoami",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:38:40.302380",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "wget malware.sh",
+    "severity": "CRITICAL",
+    "recommended_action": "BLOCK_AND_ALERT",
+    "mitre_attack": [
+      "Command and Control",
+      "Command and Control"
+    ],
+    "reasoning": [
+      "Possible malware delivery activity detected",
+      "Possible malware delivery activity detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:38:39.293592",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "sudo su",
+    "severity": "HIGH",
+    "recommended_action": "ISOLATE_ENDPOINT",
+    "mitre_attack": [
+      "Privilege Escalation"
+    ],
+    "reasoning": [
+      "Privilege escalation activity detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:38:38.286621",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "cat /etc/passwd",
+    "severity": "MEDIUM",
+    "recommended_action": "CHALLENGE_MFA",
+    "mitre_attack": [
+      "Credential Access"
+    ],
+    "reasoning": [
+      "Credential enumeration attempt detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:38:37.281331",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "uname -a",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:38:36.273444",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "ls",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:38:35.265676",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "pwd",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:38:34.258427",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "whoami",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:18:33.412940",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "wget malware.sh",
+    "severity": "CRITICAL",
+    "recommended_action": "BLOCK_AND_ALERT",
+    "mitre_attack": [
+      "Command and Control",
+      "Command and Control"
+    ],
+    "reasoning": [
+      "Possible malware delivery activity detected",
+      "Possible malware delivery activity detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:18:32.407018",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "sudo su",
+    "severity": "HIGH",
+    "recommended_action": "ISOLATE_ENDPOINT",
+    "mitre_attack": [
+      "Privilege Escalation"
+    ],
+    "reasoning": [
+      "Privilege escalation activity detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:18:31.397807",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "cat /etc/passwd",
+    "severity": "MEDIUM",
+    "recommended_action": "CHALLENGE_MFA",
+    "mitre_attack": [
+      "Credential Access"
+    ],
+    "reasoning": [
+      "Credential enumeration attempt detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:18:30.392740",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "uname -a",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:18:29.388188",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "ls",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:18:28.385904",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "pwd",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:18:27.380792",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "whoami",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:07:06.339611",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "wget malware.sh",
+    "severity": "CRITICAL",
+    "recommended_action": "BLOCK_AND_ALERT",
+    "mitre_attack": [
+      "Command and Control",
+      "Command and Control"
+    ],
+    "reasoning": [
+      "Possible malware delivery activity detected",
+      "Possible malware delivery activity detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:07:05.337066",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "sudo su",
+    "severity": "HIGH",
+    "recommended_action": "ISOLATE_ENDPOINT",
+    "mitre_attack": [
+      "Privilege Escalation"
+    ],
+    "reasoning": [
+      "Privilege escalation activity detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:07:04.332146",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "cat /etc/passwd",
+    "severity": "MEDIUM",
+    "recommended_action": "CHALLENGE_MFA",
+    "mitre_attack": [
+      "Credential Access"
+    ],
+    "reasoning": [
+      "Credential enumeration attempt detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:07:03.328199",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "uname -a",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:07:02.324309",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "ls",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:07:01.320883",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "pwd",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:07:00.319152",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "whoami",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ]
+  }
+]

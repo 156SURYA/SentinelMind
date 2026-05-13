@@ -1,0 +1,40 @@
+[
+  {
+    "timestamp": "2026-05-13 12:48:18.678777",
+    "source_ip": "127.0.0.1",
+    "attacker_profile": "Malware Operator",
+    "confidence": 0.95,
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls",
+      "uname -a",
+      "cat /etc/passwd",
+      "sudo su",
+      "wget malware.sh"
+    ],
+    "reasoning": [
+      "Malware delivery behavior observed",
+      "Extended interactive session observed"
+    ]
+  },
+  {
+    "timestamp": "2026-05-13 12:38:41.308973",
+    "source_ip": "127.0.0.1",
+    "attacker_profile": "Malware Operator",
+    "confidence": 0.95,
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls",
+      "uname -a",
+      "cat /etc/passwd",
+      "sudo su",
+      "wget malware.sh"
+    ],
+    "reasoning": [
+      "Malware delivery behavior observed",
+      "Extended interactive session observed"
+    ]
+  }
+]
