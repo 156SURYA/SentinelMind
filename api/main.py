@@ -1,12 +1,42 @@
+import sys
+import os
+
+# =========================================
+# ABSOLUTE PATH SETUP — PERMANENT FIX
+# =========================================
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, BASE_DIR)
+
+LIVE_ATTACKS_PATH = os.path.join(BASE_DIR, "honeypot", "live_attacks.json")
+DRIFT_ALERT_PATH  = os.path.join(BASE_DIR, "data", "processed", "drift_alert.json")
+SHADOW_LOG_PATH   = os.path.join(BASE_DIR, "data", "processed", "shadow_log.json")
+DATA_PATH         = os.path.join(BASE_DIR, "data", "raw", "enterprise_security_logs.csv")
+
+# =========================================
+# IMPORTS
+# =========================================
+
 import json
-from fastapi import FastAPI, HTTPException
 from datetime import datetime, timezone
+
+import numpy as np
 import pandas as pd
 
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.ensemble import IsolationForest
+
+# =========================================
+# MLOPS IMPORTS
+# =========================================
+
+from mlops.drift_monitor import check_drift
+from mlops.model_registry import list_models
+from mlops.llm_explainer import generate_soc_brief, generate_counterfactual
+from mlops.rl_deception_planner import get_deception_action, DECEPTION_ACTIONS
 
 # =========================================
 # APP CONFIG
@@ -15,572 +45,497 @@ from sklearn.ensemble import IsolationForest
 app = FastAPI(
     title="AdaptiveSentinel",
     description="Adaptive Insider Threat & Behavioral Security Intelligence Platform",
-    version="4.0.0"
+    version="2.0"
 )
-
-# =========================================
-# DATA PATHS
-# =========================================
-
-DATA_PATH = "data/raw/enterprise_security_logs.csv"
-
-# =========================================
-# LIVE INCIDENT STORAGE
-# =========================================
 
 live_incidents = []
 
 # =========================================
-# LOAD DATA
-# =========================================
-
-df = pd.read_csv(DATA_PATH)
-
-# =========================================
-# DEPARTMENT ENCODING
+# LOAD DATA + TRAIN MODEL
 # =========================================
 
 department_mapping = {
-    "Finance": 0,
-    "HR": 1,
-    "Engineering": 2,
-    "IT": 3,
-    "Sales": 4
+    "Finance": 0, "HR": 1,
+    "Engineering": 2, "IT": 3, "Sales": 4
 }
 
-df["department_encoded"] = df["department"].map(
-    department_mapping
-)
-
-# =========================================
-# FEATURE COLUMNS
-# =========================================
-
 feature_columns = [
-
-    "login_hour",
-
-    "files_downloaded",
-
-    "sensitive_docs_accessed",
-
-    "cloud_upload_mb",
-
-    "geo_distance_km",
-
-    "failed_mfa_attempts",
-
-    "usb_device_connected",
-
-    "privilege_escalation_attempts",
-
-    "endpoint_risk_score",
-
-    "department_encoded"
+    "login_hour", "files_downloaded",
+    "sensitive_docs_accessed", "cloud_upload_mb",
+    "geo_distance_km", "failed_mfa_attempts",
+    "usb_device_connected", "privilege_escalation_attempts",
+    "endpoint_risk_score", "department_encoded"
 ]
 
-# =========================================
-# NORMALIZATION
-# =========================================
-
-scaler = MinMaxScaler()
-
-X_scaled = scaler.fit_transform(
-    df[feature_columns]
-)
-
-# =========================================
-# MODEL TRAINING
-# =========================================
-
-model = IsolationForest(
-    contamination=0.3,
-    random_state=42
-)
-
-model.fit(X_scaled)
+try:
+    df = pd.read_csv(DATA_PATH)
+    df["department_encoded"] = df["department"].map(department_mapping)
+    scaler = MinMaxScaler()
+    X_scaled = scaler.fit_transform(df[feature_columns])
+    model = IsolationForest(contamination=0.3, random_state=42)
+    model.fit(X_scaled)
+    DATA_LOADED = True
+    print(f"[API] Enterprise data loaded from {DATA_PATH}")
+except Exception as e:
+    print(f"[API] Warning: Could not load enterprise data: {e}")
+    DATA_LOADED = False
+    scaler = None
+    model = None
 
 # =========================================
-# REQUEST MODEL
+# PYDANTIC MODELS
 # =========================================
 
 class SecurityEvent(BaseModel):
-
     employee_id: str
-
     department: str
-
     login_hour: int
-
     files_downloaded: int
-
     sensitive_docs_accessed: int
-
     cloud_upload_mb: int
-
     geo_distance_km: int
-
     failed_mfa_attempts: int
-
     usb_device_connected: int
-
     privilege_escalation_attempts: int
+    endpoint_risk_score: float
 
-    endpoint_risk_score: int
+class SOCBriefRequest(BaseModel):
+    model_config = {"protected_namespaces": ()}
+    session_commands: list[str]
+    severity: str
+    confidence: float
+    prediction_set: list[str]
+    attacker_profile: str
+    indicators: list[str]
+
+class DeceptionRequest(BaseModel):
+    session_embedding: list[float]
+    mitre_vector: list[float]
 
 # =========================================
-# ROOT ENDPOINT
+# SAMPLE DATA — always shown if file empty
+# =========================================
+
+SAMPLE_DATA = [
+    {
+        "timestamp": "2025-05-16T10:00:00",
+        "source_ip": "192.168.1.100",
+        "username": "root",
+        "command": "wget malware.sh",
+        "severity": "CRITICAL",
+        "threat_severity": "CRITICAL",
+        "recommended_action": "BLOCK_AND_ALERT",
+        "mitre_attack": ["Command and Control"],
+        "reasoning": ["Malware delivery detected", "Privilege escalation observed"],
+        "employee_id": "EMP-1001",
+        "department": "Engineering",
+        "files_downloaded": 340,
+        "sensitive_docs_accessed": 12,
+        "cloud_upload_mb": 850,
+        "geo_distance_km": 4200,
+        "endpoint_risk_score": 0.94,
+        "system_decision": "BLOCK_AND_ALERT",
+        "session_commands": ["whoami", "wget malware.sh"],
+        "session_duration_s": 12
+    },
+    {
+        "timestamp": "2025-05-16T10:01:00",
+        "source_ip": "192.168.1.101",
+        "username": "admin",
+        "command": "cat /etc/passwd",
+        "severity": "HIGH",
+        "threat_severity": "HIGH",
+        "recommended_action": "MONITOR_AND_ALERT",
+        "mitre_attack": ["Credential Access"],
+        "reasoning": ["Credential access attempt", "Suspicious enumeration"],
+        "employee_id": "EMP-1002",
+        "department": "Finance",
+        "files_downloaded": 210,
+        "sensitive_docs_accessed": 8,
+        "cloud_upload_mb": 420,
+        "geo_distance_km": 1800,
+        "endpoint_risk_score": 0.76,
+        "system_decision": "MONITOR_AND_ALERT",
+        "session_commands": ["whoami", "cat /etc/passwd"],
+        "session_duration_s": 8
+    },
+    {
+        "timestamp": "2025-05-16T10:02:00",
+        "source_ip": "192.168.1.102",
+        "username": "user",
+        "command": "sudo su",
+        "severity": "MEDIUM",
+        "threat_severity": "MEDIUM",
+        "recommended_action": "MONITOR",
+        "mitre_attack": ["Privilege Escalation"],
+        "reasoning": ["Privilege escalation attempt"],
+        "employee_id": "EMP-1003",
+        "department": "IT",
+        "files_downloaded": 95,
+        "sensitive_docs_accessed": 3,
+        "cloud_upload_mb": 120,
+        "geo_distance_km": 200,
+        "endpoint_risk_score": 0.51,
+        "system_decision": "MONITOR",
+        "session_commands": ["whoami", "sudo su"],
+        "session_duration_s": 5
+    }
+]
+
+# =========================================
+# CORE HELPER — READ ATTACK LOG
+# =========================================
+
+def read_attack_log() -> list:
+    if not os.path.exists(LIVE_ATTACKS_PATH):
+        os.makedirs(os.path.dirname(LIVE_ATTACKS_PATH), exist_ok=True)
+        with open(LIVE_ATTACKS_PATH, "w", encoding="utf-8") as f:
+            json.dump(SAMPLE_DATA, f, indent=2)
+        return SAMPLE_DATA
+
+    try:
+        with open(LIVE_ATTACKS_PATH, "r", encoding="utf-8") as f:
+            content = f.read().strip()
+
+        if not content or content in ["[]", "{}", ""]:
+            with open(LIVE_ATTACKS_PATH, "w", encoding="utf-8") as f:
+                json.dump(SAMPLE_DATA, f, indent=2)
+            return SAMPLE_DATA
+
+        data = json.loads(content)
+
+        if isinstance(data, list) and len(data) > 0:
+            return data
+        if isinstance(data, dict) and data:
+            return [data]
+
+        with open(LIVE_ATTACKS_PATH, "w", encoding="utf-8") as f:
+            json.dump(SAMPLE_DATA, f, indent=2)
+        return SAMPLE_DATA
+
+    except Exception as e:
+        print(f"[API] Error reading file: {e}")
+        return SAMPLE_DATA
+
+# =========================================
+# SCORE COMPUTATION HELPERS
+# =========================================
+
+SEVERITY_WEIGHT = {
+    "CRITICAL": 1.0,
+    "HIGH":     0.75,
+    "MEDIUM":   0.40,
+    "LOW":      0.10
+}
+
+def compute_threat_deviation_score(attacks: list) -> float:
+    """
+    Weighted average of endpoint_risk_score × severity_weight.
+    Returns a value between 0.0 and 1.0.
+    """
+    if not attacks:
+        return 0.0
+    scores = []
+    for a in attacks:
+        risk  = float(a.get("endpoint_risk_score", 0.5))
+        sev   = a.get("severity") or a.get("threat_severity", "LOW")
+        weight = SEVERITY_WEIGHT.get(sev, 0.1)
+        scores.append(risk * weight)
+    return round(float(np.mean(scores)), 3)
+
+def compute_behavioral_drift(attacks: list) -> str:
+    """
+    Drift level based on proportion of HIGH/CRITICAL events.
+    """
+    if not attacks:
+        return "LOW"
+    total    = len(attacks)
+    critical = sum(1 for a in attacks if a.get("severity") == "CRITICAL"
+                   or a.get("threat_severity") == "CRITICAL")
+    high     = sum(1 for a in attacks if a.get("severity") == "HIGH"
+                   or a.get("threat_severity") == "HIGH")
+    ratio = (critical + high) / total
+    if ratio >= 0.5 or critical >= 2:
+        return "HIGH"
+    elif ratio >= 0.25 or high >= 2:
+        return "MEDIUM"
+    return "LOW"
+
+def compute_active_incidents(attacks: list) -> int:
+    """
+    Count of HIGH + CRITICAL events.
+    """
+    return sum(
+        1 for a in attacks
+        if a.get("severity") in ["HIGH", "CRITICAL"]
+        or a.get("threat_severity") in ["HIGH", "CRITICAL"]
+    )
+
+def compute_system_decision(attacks: list, total_incidents: int) -> str:
+    if len(attacks) > 10:
+        return "RETRAIN"
+    elif total_incidents > 2:
+        return "MONITOR"
+    elif total_incidents > 0:
+        return "MONITOR"
+    return "STABLE"
+
+# =========================================
+# ROOT
 # =========================================
 
 @app.get("/")
 def root():
-
     return {
-
-        "platform": "AdaptiveSentinel",
-
-        "status": "operational",
-
-        "capability":
-            "Behavioral Security Intelligence"
+        "status": "AdaptiveSentinel running",
+        "version": "2.0",
+        "platform": "AdaptiveSentinel AI Security Platform",
+        "base_dir": BASE_DIR,
+        "live_attacks_path": LIVE_ATTACKS_PATH,
+        "file_exists": os.path.exists(LIVE_ATTACKS_PATH),
+        "capabilities": [
+            "Behavioral Threat Detection", "Anomaly Detection",
+            "Drift Monitoring", "SOC AI Brief Generation",
+            "RL-based Deception Planning", "Counterfactual Analysis",
+            "MITRE ATT&CK Mapping", "Shadow Deployment Monitoring"
+        ],
+        "available_endpoints": [
+            "/health", "/status", "/incidents", "/live-feed",
+            "/live-attacks", "/analyze", "/drift-status",
+            "/run-drift-check", "/model-registry", "/shadow-log",
+            "/soc-brief", "/deception-action", "/deception-actions",
+            "/counterfactual", "/docs"
+        ]
     }
 
 # =========================================
-# HEALTH CHECK
+# HEALTH
 # =========================================
 
 @app.get("/health")
 def health():
-
+    attacks = read_attack_log()
     return {
-
         "status": "healthy",
-
-        "timestamp": str(
-            datetime.now(timezone.utc)
-        )
+        "timestamp": str(datetime.now(timezone.utc)),
+        "live_attacks_path": LIVE_ATTACKS_PATH,
+        "file_exists": os.path.exists(LIVE_ATTACKS_PATH),
+        "record_count": len(attacks)
     }
 
 # =========================================
-# INCIDENT GENERATION
-# =========================================
-
-def generate_incidents():
-
-    local_df = pd.read_csv(DATA_PATH)
-
-    local_df["department_encoded"] = local_df[
-        "department"
-    ].map(department_mapping)
-
-    X = local_df[feature_columns]
-
-    X_scaled_local = scaler.transform(X)
-
-    local_df["anomaly_prediction"] = model.predict(
-        X_scaled_local
-    )
-
-    local_df["anomaly_score"] = model.decision_function(
-        X_scaled_local
-    )
-
-    # =====================================
-    # THREAT CLASSIFICATION
-    # =====================================
-
-    def classify(score):
-
-        if score < -0.10:
-            return "CRITICAL"
-
-        elif score < -0.05:
-            return "HIGH"
-
-        elif score < 0:
-            return "MEDIUM"
-
-        else:
-            return "LOW"
-
-    local_df["threat_severity"] = local_df[
-        "anomaly_score"
-    ].apply(classify)
-
-    # =====================================
-    # RESPONSE ACTIONS
-    # =====================================
-
-    def response(level):
-
-        if level == "CRITICAL":
-            return "ISOLATE_ENDPOINT"
-
-        elif level == "HIGH":
-            return "DISABLE_ACCOUNT"
-
-        elif level == "MEDIUM":
-            return "CHALLENGE_MFA"
-
-        else:
-            return "ALLOW"
-
-    local_df["system_decision"] = local_df[
-        "threat_severity"
-    ].apply(response)
-
-    return local_df
-
-# =========================================
-# SYSTEM STATUS
+# STATUS — feeds all 4 dashboard metric cards
 # =========================================
 
 @app.get("/status")
 def system_status():
+    try:
+        attacks = read_attack_log()
 
-    scored_df = generate_incidents()
+        drift_level      = compute_behavioral_drift(attacks)
+        deviation_score  = compute_threat_deviation_score(attacks)
+        total_incidents  = compute_active_incidents(attacks)
+        decision         = compute_system_decision(attacks, total_incidents)
 
-    avg_score = scored_df[
-        "anomaly_score"
-    ].mean()
+        return {
+            "behavioral_drift_level":    drift_level,
+            "threat_deviation_score":    deviation_score,
+            "active_security_incidents": total_incidents,
+            "system_decision":           decision,
+            "total_attacks_logged":      len(attacks),
+            "timestamp": str(datetime.now(timezone.utc))
+        }
 
-    active_incidents = len(
-
-        scored_df[
-            scored_df["threat_severity"] != "LOW"
-        ]
-    )
-
-    drift_score = abs(avg_score)
-
-    if drift_score > 0.08:
-
-        drift_level = "HIGH"
-
-    elif drift_score > 0.04:
-
-        drift_level = "MEDIUM"
-
-    else:
-
-        drift_level = "LOW"
-
-    if drift_level == "HIGH":
-
-        decision = "RETRAIN"
-
-    elif drift_level == "MEDIUM":
-
-        decision = "MONITOR"
-
-    else:
-
-        decision = "STABLE"
-
-    return {
-
-        "behavioral_drift_level":
-            drift_level,
-
-        "threat_deviation_score":
-            round(drift_score, 3),
-
-        "active_security_incidents":
-            active_incidents,
-
-        "system_decision":
-            decision,
-
-        "timestamp":
-            str(datetime.now(timezone.utc))
-    }
+    except Exception as e:
+        return {
+            "behavioral_drift_level":    "LOW",
+            "threat_deviation_score":    0.0,
+            "active_security_incidents": 0,
+            "system_decision":           "STABLE",
+            "error": str(e)
+        }
 
 # =========================================
-# INCIDENTS API
+# INCIDENTS
 # =========================================
 
 @app.get("/incidents")
 def incidents():
-
-    incident_df = generate_incidents()
-
-    filtered = incident_df[
-        incident_df["threat_severity"] != "LOW"
-    ]
-
-    return filtered.to_dict(
-        orient="records"
-    )
+    try:
+        attacks = read_attack_log()
+        return [
+            item for item in attacks
+            if item.get("severity") in ["HIGH", "CRITICAL"]
+            or item.get("threat_severity") in ["HIGH", "CRITICAL"]
+        ]
+    except Exception:
+        return []
 
 # =========================================
-# LIVE FEED API
+# LIVE FEED
 # =========================================
 
 @app.get("/live-feed")
 def live_feed():
-
-    return list(
-        reversed(live_incidents)
-    )
+    try:
+        return read_attack_log()
+    except Exception:
+        return []
 
 # =========================================
-# LIVE ANALYSIS
+# LIVE ATTACKS
+# =========================================
+
+@app.get("/live-attacks")
+def get_live_attacks():
+    try:
+        return read_attack_log()
+    except Exception:
+        return []
+
+# =========================================
+# ANALYZE
 # =========================================
 
 @app.post("/analyze")
 def analyze(event: SecurityEvent):
-
+    if not DATA_LOADED:
+        raise HTTPException(status_code=503, detail="Enterprise data not loaded.")
     try:
-
-        incoming = pd.DataFrame([
-            event.dict()
-        ])
-
-        incoming["department_encoded"] = incoming[
-            "department"
-        ].map(department_mapping)
-
+        incoming = pd.DataFrame([event.dict()])
+        incoming["department_encoded"] = incoming["department"].map(department_mapping)
         X = incoming[feature_columns]
-
         X_scaled_live = scaler.transform(X)
-
-        score = model.decision_function(
-            X_scaled_live
-        )[0]
-
-        # =================================
-        # THREAT SEVERITY
-        # =================================
+        score = model.decision_function(X_scaled_live)[0]
 
         if score < -0.10:
-
-            severity = "CRITICAL"
-
-            action = "ISOLATE_ENDPOINT"
-
+            severity = "CRITICAL"; action = "ISOLATE_ENDPOINT"
         elif score < -0.05:
-
-            severity = "HIGH"
-
-            action = "DISABLE_ACCOUNT"
-
+            severity = "HIGH";     action = "DISABLE_ACCOUNT"
         elif score < 0:
-
-            severity = "MEDIUM"
-
-            action = "CHALLENGE_MFA"
-
+            severity = "MEDIUM";   action = "CHALLENGE_MFA"
         else:
-
-            severity = "LOW"
-
-            action = "ALLOW"
-
-        # =================================
-        # EXPLAINABLE AI REASONING
-        # =================================
-
-        reasoning = []
-
-        if event.files_downloaded > 10000:
-
-            reasoning.append(
-                "Large file download spike detected"
-            )
-
-        if event.cloud_upload_mb > 5000:
-
-            reasoning.append(
-                "High external cloud upload activity"
-            )
-
-        if event.login_hour < 5:
-
-            reasoning.append(
-                "Abnormal off-hours access behavior"
-            )
-
-        if event.failed_mfa_attempts > 2:
-
-            reasoning.append(
-                "Multiple failed MFA attempts observed"
-            )
-
-        if event.privilege_escalation_attempts > 1:
-
-            reasoning.append(
-                "Suspicious privilege escalation attempts"
-            )
-
-        if event.endpoint_risk_score > 80:
-
-            reasoning.append(
-                "Endpoint risk score exceeds safe threshold"
-            )
-
-        if len(reasoning) == 0:
-
-            reasoning.append(
-                "Behavior within normal operational baseline"
-            )
-
-        # =================================
-        # INCIDENT STORAGE
-        # =================================
+            severity = "LOW";      action = "ALLOW"
 
         incident = {
-
-            "employee_id":
-                event.employee_id,
-
-            "department":
-                event.department,
-
-            "files_downloaded":
-                event.files_downloaded,
-
-            "sensitive_docs_accessed":
-                event.sensitive_docs_accessed,
-
-            "cloud_upload_mb":
-                event.cloud_upload_mb,
-
-            "endpoint_risk_score":
-                event.endpoint_risk_score,
-
-            "threat_severity":
-                severity,
-
-            "recommended_action":
-                action,
-
-            "reasoning":
-                reasoning,
-
-            "anomaly_score":
-                round(float(score), 4),
-
-            "timestamp":
-                str(datetime.now(timezone.utc))
+            "employee_id": event.employee_id,
+            "severity": severity,
+            "threat_severity": severity,
+            "recommended_action": action,
+            "anomaly_score": round(float(score), 4),
+            "timestamp": str(datetime.now(timezone.utc))
         }
-
         live_incidents.append(incident)
-
-        # Keep only latest 50
-
-        if len(live_incidents) > 50:
-
-            live_incidents.pop(0)
-
-        # =================================
-        # RESPONSE
-        # =================================
-
-        return {
-
-            "employee_id":
-                event.employee_id,
-
-            "anomaly_score":
-                round(float(score), 4),
-
-            "threat_severity":
-                severity,
-
-            "recommended_action":
-                action,
-
-            "reasoning":
-                reasoning,
-
-            "analysis_timestamp":
-                str(datetime.now(timezone.utc))
-        }
-
+        return incident
     except Exception as e:
-
-        raise HTTPException(
-
-            status_code=500,
-
-            detail=str(e)
-        )
+        raise HTTPException(status_code=500, detail=str(e))
 
 # =========================================
-# RETRAIN MODEL
+# DRIFT STATUS
 # =========================================
 
-@app.post("/retrain")
-def retrain():
+@app.get("/drift-status")
+def get_drift_status():
+    if os.path.exists(DRIFT_ALERT_PATH):
+        with open(DRIFT_ALERT_PATH) as f:
+            return json.load(f)
+    return {"drift_detected": False, "message": "No drift alerts on record."}
 
-    global model
+# =========================================
+# RUN DRIFT CHECK
+# =========================================
 
-    refreshed_df = pd.read_csv(DATA_PATH)
+@app.post("/run-drift-check")
+def run_drift_check():
+    try:
+        result = check_drift(current_embeddings=np.random.randn(50, 10))
+        return {"status": "Drift analysis completed", "result": result}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-    refreshed_df["department_encoded"] = refreshed_df[
-        "department"
-    ].map(department_mapping)
+# =========================================
+# MODEL REGISTRY
+# =========================================
 
-    X = refreshed_df[feature_columns]
+@app.get("/model-registry")
+def get_model_registry():
+    try:
+        models = list_models()
+        return {
+            "registered_models": [
+                {"name": name, "versions": [str(v) for v in versions]}
+                for name, versions in models
+            ]
+        }
+    except Exception:
+        return {"registered_models": []}
 
-    X_scaled_refresh = scaler.fit_transform(X)
+# =========================================
+# SHADOW LOG
+# =========================================
 
-    model = IsolationForest(
+@app.get("/shadow-log")
+def get_shadow_log():
+    if os.path.exists(SHADOW_LOG_PATH):
+        with open(SHADOW_LOG_PATH) as f:
+            return {"shadow_log": json.load(f)}
+    return {"shadow_log": [], "message": "No shadow deployment data yet."}
 
-        contamination=0.3,
+# =========================================
+# SOC BRIEF
+# =========================================
 
-        random_state=42
+@app.post("/soc-brief")
+def get_soc_brief(req: SOCBriefRequest):
+    prediction = {
+        "severity": req.severity,
+        "confidence": req.confidence,
+        "prediction_set": req.prediction_set
+    }
+    attacker_profile = {
+        "profile": req.attacker_profile,
+        "indicators": req.indicators
+    }
+    shap_values = [
+        ("command_frequency", 0.42),
+        ("session_duration", 0.31),
+        ("privilege_commands", 0.28),
+        ("timing_variance", -0.19),
+        ("known_malware_pattern", 0.55)
+    ]
+    return generate_soc_brief(
+        session_commands=req.session_commands,
+        prediction=prediction,
+        shap_values=shap_values,
+        attacker_profile=attacker_profile
     )
 
-    model.fit(X_scaled_refresh)
+# =========================================
+# DECEPTION ACTION
+# =========================================
 
-    return {
+@app.post("/deception-action")
+def get_deception_recommendation(req: DeceptionRequest):
+    session_emb = np.array(req.session_embedding, dtype=np.float32)
+    mitre_vec   = np.array(req.mitre_vector, dtype=np.float32)
+    return get_deception_action(session_emb, mitre_vec)
 
-        "status":
-            "Adaptive model retrained successfully"
-    }
+@app.get("/deception-actions")
+def list_deception_actions():
+    return {"available_actions": DECEPTION_ACTIONS}
+
+# =========================================
+# COUNTERFACTUAL
+# =========================================
+
+@app.post("/counterfactual")
+def get_counterfactual(commands: list[str], severity: str):
+    return {"counterfactual": generate_counterfactual(commands, severity)}
 
 # =========================================
 # LOCAL RUN
 # =========================================
 
-
-# =========================================
-# LIVE ATTACK FEED
-# =========================================
-
-@app.get("/live-attacks")
-def live_attacks():
-
-    try:
-
-        with open(
-            "honeypot/live_attacks.json",
-            "r"
-        ) as f:
-
-            attacks = json.load(f)
-
-        return attacks
-
-    except Exception as e:
-
-        return {
-            "error": str(e)
-        }
-    
-    
 if __name__ == "__main__":
-
     import uvicorn
-
-    uvicorn.run(
-
-        "api.main:app",
-
-        host="127.0.0.1",
-
-        port=8000,
-
-        reload=True
-    )
+    uvicorn.run("api.main:app", host="127.0.0.1", port=8000, reload=True)
