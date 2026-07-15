@@ -37,6 +37,7 @@ from mlops.drift_monitor import check_drift
 from mlops.model_registry import list_models
 from mlops.llm_explainer import generate_soc_brief, generate_counterfactual
 from mlops.rl_deception_planner import get_deception_action, DECEPTION_ACTIONS
+from mlops.continual_learner import ContinualAnomalyDetector
 
 # =========================================
 # APP CONFIG
@@ -81,6 +82,16 @@ except Exception as e:
     DATA_LOADED = False
     scaler = None
     model = None
+
+# Initialize continual learner
+continual_detector = ContinualAnomalyDetector(
+    contamination=0.3,
+    memory_capacity=500,
+    update_frequency=50
+)
+
+if DATA_LOADED:
+    continual_detector.initial_fit(X_scaled)
 
 # =========================================
 # PYDANTIC MODELS
@@ -531,6 +542,35 @@ def list_deception_actions():
 @app.post("/counterfactual")
 def get_counterfactual(commands: list[str], severity: str):
     return {"counterfactual": generate_counterfactual(commands, severity)}
+
+
+# =========================================
+# CONTINUAL LEARNING
+# =========================================
+
+@app.post("/continual-update")
+def continual_update(event: SecurityEvent):
+    """
+    Online update endpoint — called after every
+    new attack session to keep model current.
+    """
+    try:
+        incoming = pd.DataFrame([event.dict()])
+        incoming["department_encoded"] = incoming["department"].map(department_mapping)
+        X = incoming[feature_columns].values
+        result = continual_detector.update(X)
+        return {"status": "updated", "result": result}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/model-updates")
+def get_model_updates():
+    return {
+        "update_history": continual_detector.get_update_history(),
+        "n_updates": continual_detector.n_updates,
+        "memory_size": continual_detector.reservoir.size(),
+        "total_seen": continual_detector.n_samples_seen
+    }
 
 # =========================================
 # LOCAL RUN

@@ -1,0 +1,48 @@
+{
+  "batch_baseline": {
+    "f1": {
+      "mean": 0.8734,
+      "std": 0.0562
+    },
+    "precision": {
+      "mean": 0.7798,
+      "std": 0.0935
+    },
+    "recall": {
+      "mean": 1.0,
+      "std": 0.0
+    },
+    "accuracy": {
+      "mean": 0.9364,
+      "std": 0.0291
+    },
+    "auc_roc": {
+      "mean": 0.9999,
+      "std": 0.0002
+    }
+  },
+  "continual_learner": {
+    "f1": {
+      "mean": 0.8807,
+      "std": 0.0475
+    },
+    "precision": {
+      "mean": 0.7902,
+      "std": 0.0786
+    },
+    "recall": {
+      "mean": 1.0,
+      "std": 0.0
+    },
+    "accuracy": {
+      "mean": 0.9369,
+      "std": 0.0283
+    },
+    "auc_roc": {
+      "mean": 0.9998,
+      "std": 0.0003
+    }
+  },
+  "n_runs": 5,
+  "timestamp": "2026-07-06T19:24:07.956849"
+}
