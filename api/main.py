@@ -33,11 +33,16 @@ from sklearn.ensemble import IsolationForest
 # MLOPS IMPORTS
 # =========================================
 
-from mlops.drift_monitor import check_drift
 from mlops.model_registry import list_models
-from mlops.llm_explainer import generate_soc_brief, generate_counterfactual
-from mlops.rl_deception_planner import get_deception_action, DECEPTION_ACTIONS
 from mlops.continual_learner import ContinualAnomalyDetector
+
+# NOTE: mlops.drift_monitor (evidently), mlops.llm_explainer (anthropic),
+# and mlops.rl_deception_planner (torch/gymnasium/stable-baselines3) are
+# intentionally NOT imported at module level. They're heavy dependencies
+# that would otherwise be loaded into memory at startup even if nobody
+# ever calls the endpoints that need them — a real problem on
+# memory-constrained hosts (e.g. Render's 512MB free tier). Each is
+# imported lazily inside the specific endpoint function that uses it.
 
 # =========================================
 # APP CONFIG
@@ -520,6 +525,7 @@ def get_drift_status():
 @app.post("/run-drift-check")
 def run_drift_check():
     try:
+        from mlops.drift_monitor import check_drift  # lazy: pulls in evidently
         result = check_drift(current_embeddings=np.random.randn(50, 10))
         return {"status": "Drift analysis completed", "result": result}
     except Exception as e:
@@ -575,6 +581,7 @@ def get_soc_brief(req: SOCBriefRequest):
         ("timing_variance", -0.19),
         ("known_malware_pattern", 0.55)
     ]
+    from mlops.llm_explainer import generate_soc_brief  # lazy: pulls in anthropic
     return generate_soc_brief(
         session_commands=req.session_commands,
         prediction=prediction,
@@ -588,12 +595,14 @@ def get_soc_brief(req: SOCBriefRequest):
 
 @app.post("/deception-action")
 def get_deception_recommendation(req: DeceptionRequest):
+    from mlops.rl_deception_planner import get_deception_action  # lazy: torch/gymnasium/SB3
     session_emb = np.array(req.session_embedding, dtype=np.float32)
     mitre_vec   = np.array(req.mitre_vector, dtype=np.float32)
     return get_deception_action(session_emb, mitre_vec)
 
 @app.get("/deception-actions")
 def list_deception_actions():
+    from mlops.rl_deception_planner import DECEPTION_ACTIONS  # lazy: torch/gymnasium/SB3
     return {"available_actions": DECEPTION_ACTIONS}
 
 # =========================================
@@ -602,6 +611,7 @@ def list_deception_actions():
 
 @app.post("/counterfactual")
 def get_counterfactual(commands: list[str], severity: str):
+    from mlops.llm_explainer import generate_counterfactual  # lazy: pulls in anthropic
     return {"counterfactual": generate_counterfactual(commands, severity)}
 
 
