@@ -1,5 +1,81 @@
 [
   {
+    "timestamp": "2026-07-30T07:24:23.734945",
+    "source_ip": "127.0.0.1",
+    "attacker_profile": "Malware Operator",
+    "predicted_next_action": "Persistence or Lateral Movement",
+    "prediction_confidence": 0.96,
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls",
+      "uname -a",
+      "cat /etc/passwd",
+      "sudo su",
+      "wget malware.sh"
+    ],
+    "reasoning": [
+      "Malware deployment suggests post-exploitation activity"
+    ]
+  },
+  {
+    "timestamp": "2026-07-30T07:05:13.350589",
+    "source_ip": "127.0.0.1",
+    "attacker_profile": "Malware Operator",
+    "predicted_next_action": "Persistence or Lateral Movement",
+    "prediction_confidence": 0.96,
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls",
+      "uname -a",
+      "cat /etc/passwd",
+      "sudo su",
+      "wget malware.sh"
+    ],
+    "reasoning": [
+      "Malware deployment suggests post-exploitation activity"
+    ]
+  },
+  {
+    "timestamp": "2026-07-30T07:04:03.362137",
+    "source_ip": "127.0.0.1",
+    "attacker_profile": "Malware Operator",
+    "predicted_next_action": "Persistence or Lateral Movement",
+    "prediction_confidence": 0.96,
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls",
+      "uname -a",
+      "cat /etc/passwd",
+      "sudo su",
+      "wget malware.sh"
+    ],
+    "reasoning": [
+      "Malware deployment suggests post-exploitation activity"
+    ]
+  },
+  {
+    "timestamp": "2026-07-30T06:58:06.950658",
+    "source_ip": "127.0.0.1",
+    "attacker_profile": "Malware Operator",
+    "predicted_next_action": "Persistence or Lateral Movement",
+    "prediction_confidence": 0.96,
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls",
+      "uname -a",
+      "cat /etc/passwd",
+      "sudo su",
+      "wget malware.sh"
+    ],
+    "reasoning": [
+      "Malware deployment suggests post-exploitation activity"
+    ]
+  },
+  {
     "timestamp": "2026-05-23T04:29:17.343716",
     "source_ip": "127.0.0.1",
     "attacker_profile": "Malware Operator",

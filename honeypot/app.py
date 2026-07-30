@@ -4,12 +4,14 @@ import json, time, traceback
 from pathlib import Path
 
 try:
-    from models.anomaly_detector import score_request
+    from AdaptiveSentinel.models.anomaly_detector import score_request
+    SCORER_AVAILABLE = True
 except Exception as e:
-    print("⚠️ Could not import anomaly detector:", e)
+    print(f"⚠️ Could not import anomaly detector: {e}")
     score_request = None
+    SCORER_AVAILABLE = False
 
-app = FastAPI()
+app = FastAPI(title="AdaptiveSentinel — Login Anomaly Service")
 
 LOG_FILE = Path("data/raw/api_logs.jsonl")
 LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
@@ -23,7 +25,22 @@ class Login(BaseModel):
         allow_population_by_field_name = True
 
 
-@app.post("/login")
+class LoginResponse(BaseModel):
+    status: str
+    anomaly_score: float | None
+    scorer_available: bool
+
+
+@app.get("/health")
+def health():
+    return {
+        "status": "healthy",
+        "scorer_available": SCORER_AVAILABLE,
+        "log_file_exists": LOG_FILE.exists(),
+    }
+
+
+@app.post("/login", response_model=LoginResponse)
 def login(data: Login):
     event = {
         "time": time.time(),
@@ -32,9 +49,11 @@ def login(data: Login):
         "ip": "127.0.0.1"
     }
 
-    # Log event
-    with open(LOG_FILE, "a") as f:
-        f.write(json.dumps(event) + "\n")
+    try:
+        with open(LOG_FILE, "a") as f:
+            f.write(json.dumps(event) + "\n")
+    except Exception as e:
+        print(f"⚠️ Failed to write log: {e}")
 
     anomaly_score = None
 
@@ -45,4 +64,8 @@ def login(data: Login):
             print("⚠️ Scoring failed:")
             traceback.print_exc()
 
-    return {"status": "ok", "anomaly_score": anomaly_score}
+    return LoginResponse(
+        status="ok",
+        anomaly_score=anomaly_score,
+        scorer_available=SCORER_AVAILABLE,
+    )

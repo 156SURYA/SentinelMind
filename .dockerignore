@@ -3,4 +3,7 @@ __pycache__/
 .git
 .gitignore
 as-env/
-data/
+data/processed/
+data/*.jsonl
+mlruns/
+mlops/mlflow_artifacts/

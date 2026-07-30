@@ -1,4 +1,4 @@
-import plotly.express as px
+﻿import plotly.express as px
 import streamlit as st
 import requests
 import pandas as pd
@@ -363,7 +363,22 @@ st.subheader("🔁 Adaptive ML Operations")
 if st.button("Force Adaptive Model Retraining"):
     with st.spinner("Retraining behavioral intelligence model..."):
         result = trigger_retrain()
-        st.success(result.get("status", "Retraining completed"))
+
+        if "detail" in result and "status" not in result:
+            st.error(f"Retraining failed: {result['detail']}")
+        else:
+            st.success(result.get("status", "Retraining completed"))
+
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Samples Used", result.get("n_samples", "N/A"))
+            with col2:
+                st.metric("Mean Anomaly Score", result.get("mean_anomaly_score", "N/A"))
+            with col3:
+                run_id = result.get("mlflow_run_id")
+                st.metric("MLflow Run", run_id[:8] if run_id else "not logged")
+
+            st.caption(f"Retrained at {result.get('timestamp', 'unknown time')}")
 
 # =========================================
 # FOOTER

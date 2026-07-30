@@ -1,5 +1,845 @@
 [
   {
+    "timestamp": "2026-07-30T07:24:22.645943",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "wget malware.sh",
+    "severity": "CRITICAL",
+    "recommended_action": "BLOCK_AND_ALERT",
+    "mitre_attack": [
+      "Command and Control"
+    ],
+    "reasoning": [
+      "Possible malware delivery activity detected"
+    ],
+    "threat_severity": "CRITICAL",
+    "employee_id": "EMP-8773",
+    "department": "Engineering",
+    "files_downloaded": 84,
+    "sensitive_docs_accessed": 7,
+    "cloud_upload_mb": 385,
+    "geo_distance_km": 2444,
+    "endpoint_risk_score": 0.95,
+    "system_decision": "BLOCK_AND_ALERT",
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls",
+      "uname -a",
+      "cat /etc/passwd",
+      "sudo su",
+      "wget malware.sh"
+    ],
+    "session_duration_s": 6
+  },
+  {
+    "timestamp": "2026-07-30T07:24:21.594419",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "sudo su",
+    "severity": "HIGH",
+    "recommended_action": "ISOLATE_ENDPOINT",
+    "mitre_attack": [
+      "Privilege Escalation"
+    ],
+    "reasoning": [
+      "Privilege escalation activity detected"
+    ],
+    "threat_severity": "HIGH",
+    "employee_id": "EMP-8773",
+    "department": "Engineering",
+    "files_downloaded": 72,
+    "sensitive_docs_accessed": 6,
+    "cloud_upload_mb": 330,
+    "geo_distance_km": 3755,
+    "endpoint_risk_score": 0.75,
+    "system_decision": "ISOLATE_ENDPOINT",
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls",
+      "uname -a",
+      "cat /etc/passwd",
+      "sudo su"
+    ],
+    "session_duration_s": 5
+  },
+  {
+    "timestamp": "2026-07-30T07:24:20.540843",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "cat /etc/passwd",
+    "severity": "MEDIUM",
+    "recommended_action": "CHALLENGE_MFA",
+    "mitre_attack": [
+      "Credential Access"
+    ],
+    "reasoning": [
+      "Credential enumeration attempt detected"
+    ],
+    "threat_severity": "MEDIUM",
+    "employee_id": "EMP-8773",
+    "department": "Engineering",
+    "files_downloaded": 60,
+    "sensitive_docs_accessed": 5,
+    "cloud_upload_mb": 275,
+    "geo_distance_km": 4714,
+    "endpoint_risk_score": 0.5,
+    "system_decision": "CHALLENGE_MFA",
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls",
+      "uname -a",
+      "cat /etc/passwd"
+    ],
+    "session_duration_s": 4
+  },
+  {
+    "timestamp": "2026-07-30T07:24:19.491148",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "uname -a",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ],
+    "threat_severity": "LOW",
+    "employee_id": "EMP-8773",
+    "department": "Engineering",
+    "files_downloaded": 48,
+    "sensitive_docs_accessed": 4,
+    "cloud_upload_mb": 220,
+    "geo_distance_km": 2680,
+    "endpoint_risk_score": 0.2,
+    "system_decision": "MONITOR",
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls",
+      "uname -a"
+    ],
+    "session_duration_s": 3
+  },
+  {
+    "timestamp": "2026-07-30T07:24:18.444619",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "ls",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ],
+    "threat_severity": "LOW",
+    "employee_id": "EMP-8773",
+    "department": "Engineering",
+    "files_downloaded": 36,
+    "sensitive_docs_accessed": 3,
+    "cloud_upload_mb": 165,
+    "geo_distance_km": 4190,
+    "endpoint_risk_score": 0.2,
+    "system_decision": "MONITOR",
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls"
+    ],
+    "session_duration_s": 2
+  },
+  {
+    "timestamp": "2026-07-30T07:24:17.393698",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "pwd",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ],
+    "threat_severity": "LOW",
+    "employee_id": "EMP-8773",
+    "department": "Engineering",
+    "files_downloaded": 24,
+    "sensitive_docs_accessed": 2,
+    "cloud_upload_mb": 110,
+    "geo_distance_km": 2732,
+    "endpoint_risk_score": 0.2,
+    "system_decision": "MONITOR",
+    "session_commands": [
+      "whoami",
+      "pwd"
+    ],
+    "session_duration_s": 1
+  },
+  {
+    "timestamp": "2026-07-30T07:24:16.380555",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "whoami",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ],
+    "threat_severity": "LOW",
+    "employee_id": "EMP-8773",
+    "department": "Engineering",
+    "files_downloaded": 12,
+    "sensitive_docs_accessed": 1,
+    "cloud_upload_mb": 55,
+    "geo_distance_km": 2328,
+    "endpoint_risk_score": 0.2,
+    "system_decision": "MONITOR",
+    "session_commands": [
+      "whoami"
+    ],
+    "session_duration_s": 0
+  },
+  {
+    "timestamp": "2026-07-30T07:05:12.305320",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "wget malware.sh",
+    "severity": "CRITICAL",
+    "recommended_action": "BLOCK_AND_ALERT",
+    "mitre_attack": [
+      "Command and Control"
+    ],
+    "reasoning": [
+      "Possible malware delivery activity detected"
+    ],
+    "threat_severity": "CRITICAL",
+    "employee_id": "EMP-5703",
+    "department": "Engineering",
+    "files_downloaded": 84,
+    "sensitive_docs_accessed": 7,
+    "cloud_upload_mb": 385,
+    "geo_distance_km": 4052,
+    "endpoint_risk_score": 0.95,
+    "system_decision": "BLOCK_AND_ALERT",
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls",
+      "uname -a",
+      "cat /etc/passwd",
+      "sudo su",
+      "wget malware.sh"
+    ],
+    "session_duration_s": 6
+  },
+  {
+    "timestamp": "2026-07-30T07:05:11.279118",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "sudo su",
+    "severity": "HIGH",
+    "recommended_action": "ISOLATE_ENDPOINT",
+    "mitre_attack": [
+      "Privilege Escalation"
+    ],
+    "reasoning": [
+      "Privilege escalation activity detected"
+    ],
+    "threat_severity": "HIGH",
+    "employee_id": "EMP-5703",
+    "department": "Engineering",
+    "files_downloaded": 72,
+    "sensitive_docs_accessed": 6,
+    "cloud_upload_mb": 330,
+    "geo_distance_km": 513,
+    "endpoint_risk_score": 0.75,
+    "system_decision": "ISOLATE_ENDPOINT",
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls",
+      "uname -a",
+      "cat /etc/passwd",
+      "sudo su"
+    ],
+    "session_duration_s": 5
+  },
+  {
+    "timestamp": "2026-07-30T07:05:10.246710",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "cat /etc/passwd",
+    "severity": "MEDIUM",
+    "recommended_action": "CHALLENGE_MFA",
+    "mitre_attack": [
+      "Credential Access"
+    ],
+    "reasoning": [
+      "Credential enumeration attempt detected"
+    ],
+    "threat_severity": "MEDIUM",
+    "employee_id": "EMP-5703",
+    "department": "Engineering",
+    "files_downloaded": 60,
+    "sensitive_docs_accessed": 5,
+    "cloud_upload_mb": 275,
+    "geo_distance_km": 3457,
+    "endpoint_risk_score": 0.5,
+    "system_decision": "CHALLENGE_MFA",
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls",
+      "uname -a",
+      "cat /etc/passwd"
+    ],
+    "session_duration_s": 4
+  },
+  {
+    "timestamp": "2026-07-30T07:05:09.215622",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "uname -a",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ],
+    "threat_severity": "LOW",
+    "employee_id": "EMP-5703",
+    "department": "Engineering",
+    "files_downloaded": 48,
+    "sensitive_docs_accessed": 4,
+    "cloud_upload_mb": 220,
+    "geo_distance_km": 2626,
+    "endpoint_risk_score": 0.2,
+    "system_decision": "MONITOR",
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls",
+      "uname -a"
+    ],
+    "session_duration_s": 3
+  },
+  {
+    "timestamp": "2026-07-30T07:05:08.184471",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "ls",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ],
+    "threat_severity": "LOW",
+    "employee_id": "EMP-5703",
+    "department": "Engineering",
+    "files_downloaded": 36,
+    "sensitive_docs_accessed": 3,
+    "cloud_upload_mb": 165,
+    "geo_distance_km": 3158,
+    "endpoint_risk_score": 0.2,
+    "system_decision": "MONITOR",
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls"
+    ],
+    "session_duration_s": 2
+  },
+  {
+    "timestamp": "2026-07-30T07:05:07.157237",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "pwd",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ],
+    "threat_severity": "LOW",
+    "employee_id": "EMP-5703",
+    "department": "Engineering",
+    "files_downloaded": 24,
+    "sensitive_docs_accessed": 2,
+    "cloud_upload_mb": 110,
+    "geo_distance_km": 519,
+    "endpoint_risk_score": 0.2,
+    "system_decision": "MONITOR",
+    "session_commands": [
+      "whoami",
+      "pwd"
+    ],
+    "session_duration_s": 1
+  },
+  {
+    "timestamp": "2026-07-30T07:05:06.126569",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "whoami",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ],
+    "threat_severity": "LOW",
+    "employee_id": "EMP-5703",
+    "department": "Engineering",
+    "files_downloaded": 12,
+    "sensitive_docs_accessed": 1,
+    "cloud_upload_mb": 55,
+    "geo_distance_km": 2396,
+    "endpoint_risk_score": 0.2,
+    "system_decision": "MONITOR",
+    "session_commands": [
+      "whoami"
+    ],
+    "session_duration_s": 0
+  },
+  {
+    "timestamp": "2026-07-30T07:04:02.330553",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "wget malware.sh",
+    "severity": "CRITICAL",
+    "recommended_action": "BLOCK_AND_ALERT",
+    "mitre_attack": [
+      "Command and Control"
+    ],
+    "reasoning": [
+      "Possible malware delivery activity detected"
+    ],
+    "threat_severity": "CRITICAL",
+    "employee_id": "EMP-3802",
+    "department": "Engineering",
+    "files_downloaded": 84,
+    "sensitive_docs_accessed": 7,
+    "cloud_upload_mb": 385,
+    "geo_distance_km": 1563,
+    "endpoint_risk_score": 0.95,
+    "system_decision": "BLOCK_AND_ALERT",
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls",
+      "uname -a",
+      "cat /etc/passwd",
+      "sudo su",
+      "wget malware.sh"
+    ],
+    "session_duration_s": 6
+  },
+  {
+    "timestamp": "2026-07-30T07:04:01.300521",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "sudo su",
+    "severity": "HIGH",
+    "recommended_action": "ISOLATE_ENDPOINT",
+    "mitre_attack": [
+      "Privilege Escalation"
+    ],
+    "reasoning": [
+      "Privilege escalation activity detected"
+    ],
+    "threat_severity": "HIGH",
+    "employee_id": "EMP-3802",
+    "department": "Engineering",
+    "files_downloaded": 72,
+    "sensitive_docs_accessed": 6,
+    "cloud_upload_mb": 330,
+    "geo_distance_km": 3029,
+    "endpoint_risk_score": 0.75,
+    "system_decision": "ISOLATE_ENDPOINT",
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls",
+      "uname -a",
+      "cat /etc/passwd",
+      "sudo su"
+    ],
+    "session_duration_s": 5
+  },
+  {
+    "timestamp": "2026-07-30T07:04:00.265521",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "cat /etc/passwd",
+    "severity": "MEDIUM",
+    "recommended_action": "CHALLENGE_MFA",
+    "mitre_attack": [
+      "Credential Access"
+    ],
+    "reasoning": [
+      "Credential enumeration attempt detected"
+    ],
+    "threat_severity": "MEDIUM",
+    "employee_id": "EMP-3802",
+    "department": "Engineering",
+    "files_downloaded": 60,
+    "sensitive_docs_accessed": 5,
+    "cloud_upload_mb": 275,
+    "geo_distance_km": 3759,
+    "endpoint_risk_score": 0.5,
+    "system_decision": "CHALLENGE_MFA",
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls",
+      "uname -a",
+      "cat /etc/passwd"
+    ],
+    "session_duration_s": 4
+  },
+  {
+    "timestamp": "2026-07-30T07:03:59.237787",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "uname -a",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ],
+    "threat_severity": "LOW",
+    "employee_id": "EMP-3802",
+    "department": "Engineering",
+    "files_downloaded": 48,
+    "sensitive_docs_accessed": 4,
+    "cloud_upload_mb": 220,
+    "geo_distance_km": 1098,
+    "endpoint_risk_score": 0.2,
+    "system_decision": "MONITOR",
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls",
+      "uname -a"
+    ],
+    "session_duration_s": 3
+  },
+  {
+    "timestamp": "2026-07-30T07:03:58.209084",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "ls",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ],
+    "threat_severity": "LOW",
+    "employee_id": "EMP-3802",
+    "department": "Engineering",
+    "files_downloaded": 36,
+    "sensitive_docs_accessed": 3,
+    "cloud_upload_mb": 165,
+    "geo_distance_km": 3630,
+    "endpoint_risk_score": 0.2,
+    "system_decision": "MONITOR",
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls"
+    ],
+    "session_duration_s": 2
+  },
+  {
+    "timestamp": "2026-07-30T07:03:57.175053",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "pwd",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ],
+    "threat_severity": "LOW",
+    "employee_id": "EMP-3802",
+    "department": "Engineering",
+    "files_downloaded": 24,
+    "sensitive_docs_accessed": 2,
+    "cloud_upload_mb": 110,
+    "geo_distance_km": 649,
+    "endpoint_risk_score": 0.2,
+    "system_decision": "MONITOR",
+    "session_commands": [
+      "whoami",
+      "pwd"
+    ],
+    "session_duration_s": 1
+  },
+  {
+    "timestamp": "2026-07-30T07:03:56.160472",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "whoami",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ],
+    "threat_severity": "LOW",
+    "employee_id": "EMP-3802",
+    "department": "Engineering",
+    "files_downloaded": 12,
+    "sensitive_docs_accessed": 1,
+    "cloud_upload_mb": 55,
+    "geo_distance_km": 1370,
+    "endpoint_risk_score": 0.2,
+    "system_decision": "MONITOR",
+    "session_commands": [
+      "whoami"
+    ],
+    "session_duration_s": 0
+  },
+  {
+    "timestamp": "2026-07-30T06:58:05.885854",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "wget malware.sh",
+    "severity": "CRITICAL",
+    "recommended_action": "BLOCK_AND_ALERT",
+    "mitre_attack": [
+      "Command and Control"
+    ],
+    "reasoning": [
+      "Possible malware delivery activity detected"
+    ],
+    "threat_severity": "CRITICAL",
+    "employee_id": "EMP-1269",
+    "department": "Engineering",
+    "files_downloaded": 84,
+    "sensitive_docs_accessed": 7,
+    "cloud_upload_mb": 385,
+    "geo_distance_km": 1250,
+    "endpoint_risk_score": 0.95,
+    "system_decision": "BLOCK_AND_ALERT",
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls",
+      "uname -a",
+      "cat /etc/passwd",
+      "sudo su",
+      "wget malware.sh"
+    ],
+    "session_duration_s": 6
+  },
+  {
+    "timestamp": "2026-07-30T06:58:04.848136",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "sudo su",
+    "severity": "HIGH",
+    "recommended_action": "ISOLATE_ENDPOINT",
+    "mitre_attack": [
+      "Privilege Escalation"
+    ],
+    "reasoning": [
+      "Privilege escalation activity detected"
+    ],
+    "threat_severity": "HIGH",
+    "employee_id": "EMP-1269",
+    "department": "Engineering",
+    "files_downloaded": 72,
+    "sensitive_docs_accessed": 6,
+    "cloud_upload_mb": 330,
+    "geo_distance_km": 2874,
+    "endpoint_risk_score": 0.75,
+    "system_decision": "ISOLATE_ENDPOINT",
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls",
+      "uname -a",
+      "cat /etc/passwd",
+      "sudo su"
+    ],
+    "session_duration_s": 5
+  },
+  {
+    "timestamp": "2026-07-30T06:58:03.819195",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "cat /etc/passwd",
+    "severity": "MEDIUM",
+    "recommended_action": "CHALLENGE_MFA",
+    "mitre_attack": [
+      "Credential Access"
+    ],
+    "reasoning": [
+      "Credential enumeration attempt detected"
+    ],
+    "threat_severity": "MEDIUM",
+    "employee_id": "EMP-1269",
+    "department": "Engineering",
+    "files_downloaded": 60,
+    "sensitive_docs_accessed": 5,
+    "cloud_upload_mb": 275,
+    "geo_distance_km": 3642,
+    "endpoint_risk_score": 0.5,
+    "system_decision": "CHALLENGE_MFA",
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls",
+      "uname -a",
+      "cat /etc/passwd"
+    ],
+    "session_duration_s": 4
+  },
+  {
+    "timestamp": "2026-07-30T06:58:02.791805",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "uname -a",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ],
+    "threat_severity": "LOW",
+    "employee_id": "EMP-1269",
+    "department": "Engineering",
+    "files_downloaded": 48,
+    "sensitive_docs_accessed": 4,
+    "cloud_upload_mb": 220,
+    "geo_distance_km": 671,
+    "endpoint_risk_score": 0.2,
+    "system_decision": "MONITOR",
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls",
+      "uname -a"
+    ],
+    "session_duration_s": 3
+  },
+  {
+    "timestamp": "2026-07-30T06:58:01.759383",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "ls",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ],
+    "threat_severity": "LOW",
+    "employee_id": "EMP-1269",
+    "department": "Engineering",
+    "files_downloaded": 36,
+    "sensitive_docs_accessed": 3,
+    "cloud_upload_mb": 165,
+    "geo_distance_km": 1544,
+    "endpoint_risk_score": 0.2,
+    "system_decision": "MONITOR",
+    "session_commands": [
+      "whoami",
+      "pwd",
+      "ls"
+    ],
+    "session_duration_s": 2
+  },
+  {
+    "timestamp": "2026-07-30T06:58:00.734910",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "pwd",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ],
+    "threat_severity": "LOW",
+    "employee_id": "EMP-1269",
+    "department": "Engineering",
+    "files_downloaded": 24,
+    "sensitive_docs_accessed": 2,
+    "cloud_upload_mb": 110,
+    "geo_distance_km": 3483,
+    "endpoint_risk_score": 0.2,
+    "system_decision": "MONITOR",
+    "session_commands": [
+      "whoami",
+      "pwd"
+    ],
+    "session_duration_s": 1
+  },
+  {
+    "timestamp": "2026-07-30T06:57:59.709755",
+    "source_ip": "127.0.0.1",
+    "username": "root",
+    "command": "whoami",
+    "severity": "LOW",
+    "recommended_action": "MONITOR",
+    "mitre_attack": [
+      "Discovery"
+    ],
+    "reasoning": [
+      "System reconnaissance behavior detected"
+    ],
+    "threat_severity": "LOW",
+    "employee_id": "EMP-1269",
+    "department": "Engineering",
+    "files_downloaded": 12,
+    "sensitive_docs_accessed": 1,
+    "cloud_upload_mb": 55,
+    "geo_distance_km": 1909,
+    "endpoint_risk_score": 0.2,
+    "system_decision": "MONITOR",
+    "session_commands": [
+      "whoami"
+    ],
+    "session_duration_s": 0
+  },
+  {
     "timestamp": "2026-05-23T04:29:16.270048",
     "source_ip": "127.0.0.1",
     "username": "root",

@@ -442,6 +442,67 @@ def analyze(event: SecurityEvent):
         raise HTTPException(status_code=500, detail=str(e))
 
 # =========================================
+# RETRAIN — full model refit
+# (this is what the dashboard's
+#  "Force Adaptive Model Retraining"
+#  button actually calls)
+# =========================================
+
+@app.post("/retrain")
+def retrain_model():
+    """
+    Full retrain of the batch IsolationForest from the
+    current enterprise_security_logs.csv, replacing the
+    in-memory model and scaler. Distinct from
+    /continual-update, which does a single-event online
+    update — this re-fits from scratch on all available data.
+    """
+    global model, scaler, DATA_LOADED
+
+    try:
+        df = pd.read_csv(DATA_PATH)
+        df["department_encoded"] = df["department"].map(department_mapping)
+
+        new_scaler = MinMaxScaler()
+        X_scaled = new_scaler.fit_transform(df[feature_columns])
+
+        new_model = IsolationForest(contamination=0.3, random_state=42)
+        new_model.fit(X_scaled)
+
+        scores = new_model.decision_function(X_scaled)
+
+        scaler = new_scaler
+        model = new_model
+        DATA_LOADED = True
+
+        try:
+            from mlops.model_registry import log_model_run
+            run_id = log_model_run(
+                model_type="isolation_forest_full_retrain",
+                params={"contamination": 0.3, "n_samples": len(df)},
+                metrics={
+                    "mean_anomaly_score": float(np.mean(scores)),
+                    "std_anomaly_score": float(np.std(scores)),
+                },
+                sklearn_model=model,
+                tags={"trigger": "manual_dashboard_retrain"}
+            )
+        except Exception as e:
+            run_id = None
+            print(f"[API] MLflow logging skipped: {e}")
+
+        return {
+            "status": "Retraining completed",
+            "n_samples": len(df),
+            "mean_anomaly_score": round(float(np.mean(scores)), 4),
+            "mlflow_run_id": run_id,
+            "timestamp": str(datetime.now(timezone.utc))
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Retrain failed: {e}")
+
+# =========================================
 # DRIFT STATUS
 # =========================================
 
