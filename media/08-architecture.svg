@@ -1,0 +1,121 @@
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#5fb3d9"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="800" fill="#0d1117"/>
+
+  <text x="600" y="40" text-anchor="middle" fill="#e6edf3" font-size="24" font-weight="bold">AdaptiveSentinel — System Architecture</text>
+
+  <!-- Data sources -->
+  <rect x="30" y="90" width="220" height="80" rx="10" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+  <text x="140" y="118" text-anchor="middle" fill="#3fb950" font-size="14" font-weight="bold">Sensor Agent</text>
+  <text x="140" y="136" text-anchor="middle" fill="#8b949e" font-size="11">sensor/agent.py</text>
+  <text x="140" y="152" text-anchor="middle" fill="#8b949e" font-size="11">Synthetic 70/30 normal:threat</text>
+
+  <rect x="30" y="200" width="220" height="90" rx="10" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+  <text x="140" y="228" text-anchor="middle" fill="#e3b341" font-size="14" font-weight="bold">SSH Honeypot</text>
+  <text x="140" y="246" text-anchor="middle" fill="#8b949e" font-size="11">honeypot/ssh_honeypot.py</text>
+  <text x="140" y="262" text-anchor="middle" fill="#8b949e" font-size="11">Paramiko, port 2222</text>
+  <text x="140" y="278" text-anchor="middle" fill="#8b949e" font-size="11">Real attacker sessions</text>
+
+  <!-- Honeypot sub-modules -->
+  <rect x="30" y="320" width="220" height="130" rx="10" fill="#161b22" stroke="#8b949e" stroke-width="1.5"/>
+  <text x="140" y="342" text-anchor="middle" fill="#c9d1d9" font-size="12" font-weight="bold">Honeypot Intelligence</text>
+  <text x="140" y="362" text-anchor="middle" fill="#8b949e" font-size="10">threat_analyzer.py (MITRE mapping)</text>
+  <text x="140" y="380" text-anchor="middle" fill="#8b949e" font-size="10">behavioral_profiler.py</text>
+  <text x="140" y="398" text-anchor="middle" fill="#8b949e" font-size="10">predict_next_action.py</text>
+  <text x="140" y="416" text-anchor="middle" fill="#8b949e" font-size="10">session_encoder.py (CodeBERT)</text>
+  <text x="140" y="434" text-anchor="middle" fill="#8b949e" font-size="10">→ live_attacks.json</text>
+
+  <!-- FastAPI core -->
+  <rect x="330" y="90" width="280" height="140" rx="10" fill="#161b22" stroke="#58a6ff" stroke-width="2.5"/>
+  <text x="470" y="118" text-anchor="middle" fill="#58a6ff" font-size="16" font-weight="bold">FastAPI Backend</text>
+  <text x="470" y="136" text-anchor="middle" fill="#8b949e" font-size="11">api/main.py — port 8000</text>
+  <text x="470" y="158" text-anchor="middle" fill="#c9d1d9" font-size="11">IsolationForest (contamination=0.3)</text>
+  <text x="470" y="176" text-anchor="middle" fill="#c9d1d9" font-size="11">10 behavioral features → severity</text>
+  <text x="470" y="194" text-anchor="middle" fill="#c9d1d9" font-size="11">15 REST endpoints</text>
+  <text x="470" y="212" text-anchor="middle" fill="#c9d1d9" font-size="11">/analyze /status /incidents /soc-brief ...</text>
+
+  <!-- mlops modules -->
+  <rect x="330" y="260" width="280" height="330" rx="10" fill="#161b22" stroke="#bc8cff" stroke-width="2"/>
+  <text x="470" y="286" text-anchor="middle" fill="#bc8cff" font-size="14" font-weight="bold">mlops/ — Adaptive Layer</text>
+
+  <rect x="350" y="300" width="240" height="40" rx="6" fill="#0d1117" stroke="#bc8cff" stroke-width="1"/>
+  <text x="470" y="317" text-anchor="middle" fill="#c9d1d9" font-size="10.5" font-weight="bold">Continual Learner</text>
+  <text x="470" y="332" text-anchor="middle" fill="#8b949e" font-size="9.5">Reservoir sampling + KS-test drift</text>
+
+  <rect x="350" y="348" width="240" height="36" rx="6" fill="#0d1117" stroke="#bc8cff" stroke-width="1"/>
+  <text x="470" y="365" text-anchor="middle" fill="#c9d1d9" font-size="10.5" font-weight="bold">Drift Monitor (Evidently)</text>
+  <text x="470" y="378" text-anchor="middle" fill="#8b949e" font-size="9.5">Demo: fed synthetic embeddings</text>
+
+  <rect x="350" y="392" width="240" height="36" rx="6" fill="#0d1117" stroke="#bc8cff" stroke-width="1"/>
+  <text x="470" y="409" text-anchor="middle" fill="#c9d1d9" font-size="10.5" font-weight="bold">Model Registry (MLflow)</text>
+  <text x="470" y="422" text-anchor="middle" fill="#8b949e" font-size="9.5">Experiment tracking, run history</text>
+
+  <rect x="350" y="436" width="240" height="36" rx="6" fill="#0d1117" stroke="#bc8cff" stroke-width="1"/>
+  <text x="470" y="453" text-anchor="middle" fill="#c9d1d9" font-size="10.5" font-weight="bold">Shadow Deployment</text>
+  <text x="470" y="466" text-anchor="middle" fill="#8b949e" font-size="9.5">Champion / challenger F1 promotion</text>
+
+  <rect x="350" y="480" width="240" height="36" rx="6" fill="#0d1117" stroke="#bc8cff" stroke-width="1"/>
+  <text x="470" y="497" text-anchor="middle" fill="#c9d1d9" font-size="10.5" font-weight="bold">Conformal Predictor (MAPIE)</text>
+  <text x="470" y="510" text-anchor="middle" fill="#8b949e" font-size="9.5">Calibrated prediction sets</text>
+
+  <rect x="350" y="524" width="240" height="36" rx="6" fill="#0d1117" stroke="#bc8cff" stroke-width="1"/>
+  <text x="470" y="541" text-anchor="middle" fill="#c9d1d9" font-size="10.5" font-weight="bold">RL Deception Planner (PPO)</text>
+  <text x="470" y="554" text-anchor="middle" fill="#8b949e" font-size="9.5">8 honeypot response actions</text>
+
+  <rect x="350" y="562" width="240" height="20" rx="6" fill="none"/>
+  <text x="470" y="577" text-anchor="middle" fill="#6e7681" font-size="9">Federated Aggregator (Flower) — scaffold</text>
+
+  <!-- LLM -->
+  <rect x="330" y="610" width="280" height="70" rx="10" fill="#161b22" stroke="#f0883e" stroke-width="2"/>
+  <text x="470" y="634" text-anchor="middle" fill="#f0883e" font-size="13" font-weight="bold">LLM Explainer (Claude)</text>
+  <text x="470" y="652" text-anchor="middle" fill="#8b949e" font-size="10.5">SOC brief generation</text>
+  <text x="470" y="668" text-anchor="middle" fill="#8b949e" font-size="10.5">Counterfactual analysis</text>
+
+  <!-- Streamlit Dashboard -->
+  <rect x="650" y="90" width="240" height="140" rx="10" fill="#161b22" stroke="#f778ba" stroke-width="2.5"/>
+  <text x="770" y="118" text-anchor="middle" fill="#f778ba" font-size="16" font-weight="bold">Streamlit Dashboard</text>
+  <text x="770" y="136" text-anchor="middle" fill="#8b949e" font-size="11">dashboard/app.py — port 8501</text>
+  <text x="770" y="158" text-anchor="middle" fill="#c9d1d9" font-size="11">SOC metric cards</text>
+  <text x="770" y="176" text-anchor="middle" fill="#c9d1d9" font-size="11">Live incident + attacker feed</text>
+  <text x="770" y="194" text-anchor="middle" fill="#c9d1d9" font-size="11">Plotly severity / risk analytics</text>
+  <text x="770" y="212" text-anchor="middle" fill="#c9d1d9" font-size="11">AI threat intelligence summaries</text>
+
+  <!-- Data stores -->
+  <rect x="650" y="270" width="240" height="150" rx="10" fill="#161b22" stroke="#8b949e" stroke-width="1.5"/>
+  <text x="770" y="296" text-anchor="middle" fill="#c9d1d9" font-size="13" font-weight="bold">Data &amp; Artifacts</text>
+  <text x="770" y="320" text-anchor="middle" fill="#8b949e" font-size="10.5">data/raw/*.csv — training logs</text>
+  <text x="770" y="340" text-anchor="middle" fill="#8b949e" font-size="10.5">data/processed/*.json — drift, shadow</text>
+  <text x="770" y="360" text-anchor="middle" fill="#8b949e" font-size="10.5">mlruns/ — MLflow tracking store</text>
+  <text x="770" y="380" text-anchor="middle" fill="#8b949e" font-size="10.5">continual_model.pkl — checkpoint</text>
+  <text x="770" y="400" text-anchor="middle" fill="#8b949e" font-size="10.5">rl_deception_policy.zip — PPO policy</text>
+
+  <!-- Legend -->
+  <rect x="650" y="450" width="240" height="130" rx="10" fill="#161b22" stroke="#3fb950" stroke-width="1"/>
+  <text x="770" y="474" text-anchor="middle" fill="#c9d1d9" font-size="12" font-weight="bold">Legend</text>
+  <circle cx="668" cy="492" r="5" fill="#3fb950"/>
+  <text x="682" y="497" fill="#8b949e" font-size="10.5">Real, running on live data</text>
+  <circle cx="668" cy="512" r="5" fill="#e3b341"/>
+  <text x="682" y="517" fill="#8b949e" font-size="10.5">Real logic, demo/synthetic input</text>
+  <circle cx="668" cy="532" r="5" fill="#6e7681"/>
+  <text x="682" y="537" fill="#8b949e" font-size="10.5">Architectural scaffold</text>
+
+  <!-- Docker boundary -->
+  <rect x="315" y="75" width="590" height="620" rx="14" fill="none" stroke="#30363d" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="325" y="70" fill="#6e7681" font-size="11">Docker network</text>
+
+  <!-- Arrows -->
+  <line x1="250" y1="130" x2="330" y2="150" stroke="#5fb3d9" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="250" y1="380" x2="330" y2="330" stroke="#5fb3d9" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="610" y1="160" x2="650" y2="160" stroke="#5fb3d9" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="650" y1="200" x2="610" y2="180" stroke="#5fb3d9" stroke-width="2" marker-end="url(#arrow)" stroke-dasharray="4,3"/>
+  <line x1="470" y1="230" x2="470" y2="260" stroke="#5fb3d9" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="470" y1="590" x2="470" y2="610" stroke="#5fb3d9" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="610" y1="345" x2="650" y2="345" stroke="#5fb3d9" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <text x="600" y="740" text-anchor="middle" fill="#6e7681" font-size="11">Dashboard polls the API over the Docker-internal network (http://api:8000) — no localhost dependencies between services.</text>
+</svg>
