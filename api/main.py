@@ -317,10 +317,11 @@ def root():
         ],
         "available_endpoints": [
             "/health", "/status", "/incidents", "/live-feed",
-            "/live-attacks", "/analyze", "/drift-status",
+            "/live-attacks", "/analyze", "/retrain", "/drift-status",
             "/run-drift-check", "/model-registry", "/shadow-log",
             "/soc-brief", "/deception-action", "/deception-actions",
-            "/counterfactual", "/docs"
+            "/counterfactual", "/continual-update", "/model-updates",
+            "/docs"
         ]
     }
 
@@ -417,6 +418,16 @@ def get_live_attacks():
 def analyze(event: SecurityEvent):
     if not DATA_LOADED:
         raise HTTPException(status_code=503, detail="Enterprise data not loaded.")
+
+    if event.department not in department_mapping:
+        raise HTTPException(
+            status_code=422,
+            detail=(
+                f"Invalid department '{event.department}'. "
+                f"Must be one of: {list(department_mapping.keys())}"
+            )
+        )
+
     try:
         incoming = pd.DataFrame([event.dict()])
         incoming["department_encoded"] = incoming["department"].map(department_mapping)
@@ -444,7 +455,7 @@ def analyze(event: SecurityEvent):
         live_incidents.append(incident)
         return incident
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Analysis failed: {e}")
 
 # =========================================
 # RETRAIN — full model refit
@@ -625,6 +636,15 @@ def continual_update(event: SecurityEvent):
     Online update endpoint — called after every
     new attack session to keep model current.
     """
+    if event.department not in department_mapping:
+        raise HTTPException(
+            status_code=422,
+            detail=(
+                f"Invalid department '{event.department}'. "
+                f"Must be one of: {list(department_mapping.keys())}"
+            )
+        )
+
     try:
         incoming = pd.DataFrame([event.dict()])
         incoming["department_encoded"] = incoming["department"].map(department_mapping)
@@ -632,7 +652,7 @@ def continual_update(event: SecurityEvent):
         result = continual_detector.update(X)
         return {"status": "updated", "result": result}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Continual update failed: {e}")
 
 @app.get("/model-updates")
 def get_model_updates():
