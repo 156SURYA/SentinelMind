@@ -14,7 +14,9 @@ venv/
 .env
 
 # Data & logs
-data/
+# Data & logs
+data/processed/
+data/*.jsonl
 honeylog/
 logs/
 

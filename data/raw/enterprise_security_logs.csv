@@ -1,0 +1,12 @@
+employee_id,department,login_hour,files_downloaded,sensitive_docs_accessed,cloud_upload_mb,geo_distance_km,failed_mfa_attempts,usb_device_connected,privilege_escalation_attempts,endpoint_risk_score,anomaly_label
+
+EMP-1001,Finance,9,120,3,50,5,0,0,0,12,normal
+EMP-1002,HR,10,95,1,20,3,0,0,0,10,normal
+EMP-1003,Engineering,11,180,5,120,8,0,0,0,18,normal
+EMP-1004,Finance,2,21000,734,12400,6700,4,1,3,92,suspicious
+EMP-1005,IT,1,17000,620,9800,5400,3,1,5,88,suspicious
+EMP-1006,HR,14,110,2,40,6,0,0,0,14,normal
+EMP-1007,Engineering,3,14500,540,8600,7200,2,1,4,85,suspicious
+EMP-1008,Finance,13,130,4,60,4,0,0,0,16,normal
+EMP-1009,Sales,15,90,1,25,2,0,0,0,9,normal
+EMP-1010,IT,4,19000,690,11000,6100,5,1,6,95,suspicious
