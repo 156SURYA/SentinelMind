@@ -2,11 +2,9 @@
 __pycache__/
 *.pyc
 
-
-mlflow.db //modifed
+# Databases
+mlflow.db
 *.db
-__pycache__/
-*.pyc
 
 # Virtual environments
 as-env/
@@ -14,9 +12,9 @@ venv/
 .env
 
 # Data & logs
-# Data & logs
 data/processed/
 data/*.jsonl
+data/**/*.jsonl
 honeylog/
 logs/
 
